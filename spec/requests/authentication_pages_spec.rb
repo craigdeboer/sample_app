@@ -31,6 +31,8 @@ describe "Authentication" do
 
       it { should have_title('Sign in') }
       it { should have_selector('div.alert.alert-error') }
+      it { should_not have_link('Profile') }
+      it { should_not have_link('Settings') }
 
       describe "after visiting another page" do
         before { click_link "Home" }
@@ -74,6 +76,17 @@ describe "Authentication" do
 
           it "should render the desired protected page" do
             expect(page).to have_title('Edit user')
+          end
+
+          describe "after subsequent sign in" do
+            before do
+              click_link "Sign out"
+              sign_in(user)
+            end
+
+            it "should render the profile page" do
+              expect(page).to have_title(user.name)
+            end
           end
         end
       end
