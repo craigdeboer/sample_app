@@ -5,7 +5,30 @@ describe "Micropost pages" do
   subject { page }
 
   let(:user) { FactoryGirl.create(:user) }
-  before { sign_in user }
+  before { sign_in user } 
+
+  describe "sidebar micropost counts with one post" do
+    before do 
+      FactoryGirl.create(:micropost, user: user, content: "Text 1")
+      visit root_path
+    end
+    specify do
+      should have_selector('aside.span4', text: 'micropost') 
+      expect(Micropost.count).to eq(1)
+    end
+  end
+
+  describe "sidebar micropost counts with more than one post" do
+    before do 
+      FactoryGirl.create(:micropost, user: user, content: "Text 1")
+      FactoryGirl.create(:micropost, user: user, content: "Text 2")
+      visit root_path
+    end
+    specify do
+      should have_selector('aside.span4', text: 'microposts') 
+      expect(Micropost.count).to eq(2)
+    end
+  end
 
   describe "micropost creation" do
     before { visit root_path }

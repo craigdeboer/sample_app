@@ -31,6 +31,19 @@ describe "Static pages" do
           expect(page).to have_selector("li##{item.id}", text: item.content)
         end
       end
+
+      describe "should not have delete link if microposts aren't the users" do
+        
+        let(:user2) { FactoryGirl.create(:user, email: "user2@gamil.com") }
+        before do
+          FactoryGirl.create(:micropost, user: user2, content: "Lorem ipsum")
+          FactoryGirl.create(:micropost, user: user2, content: "Dolor sit amet")
+          visit user_path(user2)
+        end
+        specify do
+          expect(page).not_to have_link('delete')
+        end
+      end
     end
   end
 
